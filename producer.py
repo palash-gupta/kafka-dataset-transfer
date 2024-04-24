@@ -38,12 +38,16 @@ if __name__ == '__main__':
         print("Please specify file(s) to transfer.", file=sys.stderr)
         exit(1)
 
+    file_paths = []
     for path in sys.argv[1:]:
         if not os.path.exists(path):
             print(f"{path} does not exist.", file=sys.stderr)
             exit(1)
+        elif os.path.isdir(path):
+            for file_path in [os.path.join(root, f) for root, dirs, filenames in os.walk(path) for f in filenames]: # list all files in any directory
+                file_paths.append(file_path)
 
-    for path in sys.argv[1:]:
+    for path in file_paths:
         file_transfer(os.path.abspath(path))
     
 
