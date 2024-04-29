@@ -1,9 +1,11 @@
 from kafka import KafkaProducer
 import os
 import sys
+import time
 
 BATCH_SIZE = 28 * 28 # MNIST Dimensions
 REPLICATION_FACTOR = 1 # number of available brokers
+WAIT_MS = 10
 BOOTSTRAP_SERVERS = ['localhost:9092']
 EVENTS_TOPIC = 'mnist-transfer-events'
 
@@ -11,9 +13,8 @@ EVENTS_TOPIC = 'mnist-transfer-events'
 
 producer_config = {
         "bootstrap_servers": BOOTSTRAP_SERVERS,
-        "compression_type": "gzip",
         "batch_size": BATCH_SIZE,
-        "linger_ms": 10, # 10ms added latency for better batching
+        "linger_ms": WAIT_MS, # added latency for better batching
     }
 
 producer = KafkaProducer(**producer_config)
@@ -55,7 +56,7 @@ if __name__ == '__main__':
             file_paths.append(path)
 
     for path in file_paths:
-        file_transfer(os.path.abspath(path), BATCH_SIZE)
+        file_transfer(os.path.abspath(path))
 
 
 
